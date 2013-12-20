@@ -10,10 +10,10 @@
 #include "HuskyLoader.h"
 
 class TestObserver : public HuskyObserver {
-	void setAchievementCallback(char *name, bool success);
+	void HuskyObserverAchievementCallback(const char *name, bool success);
 };
 
-void TestObserver::setAchievementCallback(char *name, bool success) {
+void TestObserver::HuskyObserverAchievementCallback(const char *name, bool success) {
 	if (success) {
 		std::cout << "Achievement " << name << " set successfully!" << std::endl;
 	} else {
