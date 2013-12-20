@@ -12,7 +12,7 @@
 /** Observers for Husky callbacks **/
 class HuskyObserver {
 public:
-	virtual void setAchievementCallback(char *name, bool success) = 0;
+	virtual void HuskyObserverAchievementCallback(const char *name, bool success) = 0;
 };
 
 
@@ -24,7 +24,7 @@ public:
 	virtual void setObserver(HuskyObserver *observer) = 0;
 
 	/** Try and set the achievement with this name. Will return a setAchievementCallback if an observer is set **/
-	virtual void setAchievement(char *name) = 0;
+	virtual void setAchievement(const char *name) = 0;
 };
 
 

@@ -35,14 +35,14 @@ void HuskyDummy::setObserver(HuskyObserver *observer) {
 }
 
 EXPORT
-void HuskyDummy::setAchievement(char *name) {
+void HuskyDummy::setAchievement(const char *name) {
 	if (_observer != NULL) {
 		if (strcmp(name, "Failed Achievement") == 0) {
 			std::cout << "Dummy Husky: Failed Achievement used, sending failure callback: " << std::endl;
-			_observer->setAchievementCallback(name, false);
+			_observer->HuskyObserverAchievementCallback(name, false);
 		} else {
 			std::cout << "Dummy Husky: sending success callback for " << name << std::endl;
-			_observer->setAchievementCallback(name, true);
+			_observer->HuskyObserverAchievementCallback(name, true);
 		}
 	} else {
 		std::cout << "Dummy Husky: Setting Achievement Earned: " << name << std::endl;

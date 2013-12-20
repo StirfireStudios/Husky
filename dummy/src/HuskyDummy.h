@@ -26,7 +26,7 @@ public:
 	/** Try and set the achievement with this name. Will return a setAchievementCallback if an observer is set.
 		If an observer is set and an achievement called "Failed Achievement" is set, the observer will get a failed callback
 	 **/
-	void setAchievement(char* name);
+	void setAchievement(const char* name);
 	
 private:
 	static HuskyDummy* instance;
