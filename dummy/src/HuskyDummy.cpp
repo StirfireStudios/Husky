@@ -14,11 +14,13 @@ HuskyDummy* HuskyDummy::instance;
 
 EXPORT
 HuskyDummy::HuskyDummy() {
+	printf("Booting up dummy husky\n");
 	_observer = NULL;
 }
 
 EXPORT
 HuskyDummy::~HuskyDummy() {
+	printf("Shutting Down dummy husky\n");
 }
 
 EXPORT
@@ -27,6 +29,13 @@ HuskyDummy* HuskyDummy::getInstance() {
 		instance = new HuskyDummy();
 	}
 	return instance;
+}
+
+EXPORT
+void HuskyDummy::shutdownInstance() {
+	if(instance) {
+		delete(instance);
+	}
 }
 
 EXPORT
@@ -52,6 +61,11 @@ void HuskyDummy::setAchievement(const char *name) {
 EXPORT
 Husky *getHuskyInstance() {
 	return HuskyDummy::getInstance();
+}
+
+EXPORT
+void shutdownHuskyInstance() {
+	HuskyDummy::shutdownInstance();
 }
 
 EXPORT

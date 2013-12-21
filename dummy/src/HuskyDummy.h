@@ -17,6 +17,8 @@ class HuskyDummy : public Husky {
 public:
 	/** Get a handle to the husky singleton **/
 	static HuskyDummy* getInstance();
+
+	static void shutdownInstance();
 	
 	/** Returns the name of the Husky **/
 	static char* getName();

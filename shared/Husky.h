@@ -30,6 +30,8 @@ public:
 
 extern "C" Husky* getHuskyInstance();
 typedef Husky* HuskyGetStaticInstance();
+extern "C" void shutdownHuskyInstance();
+typedef void HuskyShutdownStaticInstance();
 extern "C" char *getHuskyName();
 typedef char* HuskyGetName();
 
