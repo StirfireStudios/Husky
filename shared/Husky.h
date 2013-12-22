@@ -12,8 +12,8 @@
 /** Observers for Husky callbacks **/
 class HuskyObserver {
 public:
+	virtual ~HuskyObserver();
 	virtual void HuskyObserverAchievementCallback(const char *name, bool success) = 0;
-	
 	virtual void HuskyObserverLeaderboardScoreSetCallback(const char *name, bool success) = 0;
 };
 
@@ -33,6 +33,9 @@ enum HuskyLeaderboardScoreTimeFrame {
 
 class Husky {
 public:
+
+	virtual ~Husky();
+	
 	/** Get a handle to the husky singleton **/
 	static Husky *getInstance();
 	
@@ -43,12 +46,15 @@ public:
 
 	/** Try and set the achievement with this name. Will return a setAchievementCallback if an observer is set **/
 	virtual void setAchievement(const char *name) = 0;
+
+	/** This function is run every update cycle to service callbacks etc. */
+	virtual void doTick() = 0;
 	
 	/** resets users's achievements and stats data **/
 	virtual void resetAchievements() = 0;
 	
 	/** uploads a score to the specified leaderboard **/
-	virtual void uploadLeaderboardScore(const char *name, int32 score, HuskyLeaderboardScoreToKeep tokeep) = 0;
+	virtual void uploadLeaderboardScore(const char *name, int32_t score, HuskyLeaderboardScoreToKeep tokeep) = 0;
 
 	/** requests a set of scores from this leaderboard **/
 	/** friends = request only scores that the user is friends with **/
