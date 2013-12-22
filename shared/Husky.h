@@ -17,14 +17,19 @@ public:
 	virtual void HuskyObserverLeaderboardScoreSetCallback(const char *name, bool success) = 0;
 };
 
+/** Leaderboard Score keep types **/
+enum HuskyLeaderboardScoreToKeep {
+	HuskyLeaderboardScoreToKeepNone = 0,
+	HuskyLeaderboardScoreToKeepBest = 1,	// Leaderboard will keep user's best score
+	HuskyLeaderboardScoreToKeepUpdate = 2,	// Leaderboard will always replace score with specified
+};
+
 /** Leaderboard Timeframes **/
-enum {
+enum HuskyLeaderboardScoreTimeFrame {
 	HuskyLeaderboardTodaysScores = 0,
 	HuskyLeaderboardWeeksScores,
 	HuskyLeaderboardAllScores
 };
-
-typedef unsigned short HuskyLeaderboardScoreTimeFrame;
 
 class Husky {
 public:
@@ -43,7 +48,7 @@ public:
 	virtual void resetAchievements() = 0;
 	
 	/** uploads a score to the specified leaderboard **/
-	virtual void uploadLeaderboardScore(const char *name, int32 score) = 0;
+	virtual void uploadLeaderboardScore(const char *name, int32 score, HuskyLeaderboardScoreToKeep tokeep) = 0;
 
 	/** requests a set of scores from this leaderboard **/
 	/** friends = request only scores that the user is friends with **/
