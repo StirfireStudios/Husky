@@ -12,7 +12,7 @@
 /** Observers for Husky callbacks **/
 class HuskyObserver {
 public:
-	virtual ~HuskyObserver();
+//	virtual ~HuskyObserver();
 	virtual void HuskyObserverAchievementCallback(const char *name, bool success) = 0;
 	virtual void HuskyObserverLeaderboardScoreSetCallback(const char *name, bool success) = 0;
 };
@@ -33,8 +33,7 @@ enum HuskyLeaderboardScoreTimeFrame {
 
 class Husky {
 public:
-
-	virtual ~Husky();
+//	virtual ~Husky();
 	
 	/** Get a handle to the husky singleton **/
 	static Husky *getInstance();
