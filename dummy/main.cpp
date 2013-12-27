@@ -8,9 +8,14 @@
 
 #include <iostream>
 #include "HuskyLoader.h"
+#include <inttypes.h>
 
 class TestObserver : public HuskyObserver {
 	void HuskyObserverAchievementCallback(const char *name, bool success);
+	void HuskyObserverLeaderboardScoreSetCallback(const char *name, bool success);
+	void HuskyObserverLeaderboardScoreGetCallback(const char *name, HuskyLeaderboardEntry *entries, int number);
+	void HuskyObserverCloudFileUploaded(const char *path, bool success);
+	void HuskyObserverCloudFileDownloaded(const char *cloudfilename, const char *tempfile, bool success);
 };
 
 void TestObserver::HuskyObserverAchievementCallback(const char *name, bool success) {
@@ -21,6 +26,36 @@ void TestObserver::HuskyObserverAchievementCallback(const char *name, bool succe
 	}
 }
 
+void TestObserver::HuskyObserverLeaderboardScoreSetCallback(const char *name, bool success) {
+	if (success) {
+		std::cout << "new score for Leaderboard " << name << " uploaded successfully!" << std::endl;
+	} else {
+		std::cout << "new score for Leaderboard " << name << " uploaded failed :(" << std::endl;
+	}
+}
+
+void TestObserver::HuskyObserverLeaderboardScoreGetCallback(const char *name, HuskyLeaderboardEntry *entries, int number) {
+	printf("Recieved scores for leaderboard: %s", name);
+	for(int i = 0; i < number; i++) {
+		printf("%i. %s Score: %i - Extra Data: %" PRId64"\n", entries[i].globalrank, entries[i].name, entries[i].score, entries[i].data);
+	}
+}
+
+void TestObserver::HuskyObserverCloudFileUploaded(const char *path, bool success) {
+	if (success) {
+		std::cout << " Uploaded \"" << path << "\" to cloud storage" << std::endl;
+	} else {
+		std::cout << " Failed to Upload \"" << path << "\" to cloud storage :(" << std::endl;
+	}
+}
+
+void TestObserver::HuskyObserverCloudFileDownloaded(const char *cloudfilename, const char *tempfile, bool success) {
+	if (success) {
+		std::cout << " Downloaded cloud file \"" << cloudfilename << "\" to \"" << tempfile << "\" to cloud storage" << std::endl;
+	} else {
+		std::cout << " Failed to download cloud file \"" << cloudfilename << "\"" << std::endl;
+	}
+}
 
 int main(int argc, const char * argv[]) {
 	HuskyLoader *loader = HuskyLoader::getInstance();
@@ -31,17 +66,81 @@ int main(int argc, const char * argv[]) {
 	}
 		
 	Husky *husky = loader->getHuskyInstance((char*)"Dummy");
-	
-	std::cout << "Trying to set an achievement" << std::endl;
-	husky->setAchievement((char*)"Test Achievement");
 
-	std::cout << "Trying to set an achievement with an observer." << std::endl;
-	TestObserver* observer = new TestObserver();
-	husky->setObserver(observer);
-	husky->setAchievement((char*)"Test Achievement");
-	husky->setAchievement((char*)"Failed Achievement");
-	std::cout << "Observer should have generated output above" << std::endl;
+	std::cout << "Excercising Husky" << std::endl << std::endl;
 	
-    return 0;
+	uint16_t capabilities = husky->getCapabilities();
+	if (capabilities && HuskyHasAchievements) {
+		std::cout << "#####################" << std::endl;
+		std::cout << "ACHIEVEMENTS" << std::endl;
+		std::cout << "#####################" << std::endl;
+
+		std::cout << "Trying to set an achievement" << std::endl;
+		husky->setAchievement((char*)"Test Achievement");
+		std::cout << "Trying to set an achievement with an observer." << std::endl;
+		TestObserver* observer = new TestObserver();
+		husky->setObserver(observer);
+		husky->setAchievement((char*)"Test Achievement");
+		husky->setAchievement((char*)"Failed Achievement");
+		std::cout << "Observer should have generated output above" << std::endl;
+
+		std::cout << std::endl;
+		std::cout << std::endl;
+	}
+	
+	if (capabilities && HuskyHasLeaderboards) {
+	
+		std::cout << "#####################" << std::endl;
+		std::cout << "LEADERBOARDS" << std::endl;
+		std::cout << "#####################" << std::endl;
+		
+		std::cout << "Trying to upload a score of 100 to \"Leaderboard 1\" which keeps the best score" << std::endl;
+		husky->uploadLeaderboardScore("Leaderboard 1", 100, HuskyLeaderboardScoreToKeepBest, 0);
+		std::cout << "Trying to upload a score of 200 to \"Leaderboard 2\" which keeps the newest score" << std::endl;
+		husky->uploadLeaderboardScore("Leaderboard 1", 100, HuskyLeaderboardScoreToKeepUpdate, 0);
+		
+		std::cout << "Trying to upload a score of 100 to \"Failed Leaderboard\" which should fail" << std::endl;
+		husky->uploadLeaderboardScore("Failed Leaderboard", 100, HuskyLeaderboardScoreToKeepBest, 0);
+
+		std::cout << "Trying to retrieve top 10 scores from \"Failed Leaderboard\" (which should have no scores)" << std::endl;
+		husky->requestLeaderboardScores("Failed Leaderboard", false, HuskyLeaderboardAllScores, 0, 10);
+		
+		std::cout << "Trying to retrieve top 10 scores from \"Leaderboard 1\"" << std::endl;
+		husky->requestLeaderboardScores("Leaderboard 1", false, HuskyLeaderboardAllScores, 0, 10);
+
+		std::cout << "Trying to retrieve top 10 scores from \"Leaderboard 1\" among user's friends" << std::endl;
+		husky->requestLeaderboardScores("Leaderboard 1", true, HuskyLeaderboardAllScores, 0, 10);
+		
+		std::cout << "Trying to retrieve top 10 scores from \"Leaderboard 1\" among user's friends in the last week" << std::endl;
+		husky->requestLeaderboardScores("Leaderboard 1", true, HuskyLeaderboardWeeksScores, 0, 10);
+
+		std::cout << std::endl;
+		std::cout << std::endl;
+	}
+
+	if (capabilities && HuskyHasCloudSaves) {
+		std::cout << "#####################" << std::endl;
+		std::cout << "Cloud Storage" << std::endl;
+		std::cout << "#####################" << std::endl;
+		
+		FILE *handle = fopen("/tmp/cloudtest.txt", "w");
+		if (handle) {
+			const char *teststring = "TEST CLOUD FILE";
+			fwrite(teststring, sizeof(char), strlen(teststring) + 1, handle);
+			fclose(handle);
+			std::cout << "Trying to upload the cloud test file" << std::endl;
+			husky->uploadCloudFile("/tmp/cloudtest.txt", "cloudtest.txt");
+			std::cout << "Trying to upload the failing test file" << std::endl;
+			husky->uploadCloudFile("/tmp/cloudtest.txt", "failure");
+
+			std::cout << "Trying to download a cloud test file" << std::endl;
+			husky->requestCloudFile("cloudtest.txt");
+			std::cout << "Trying to download a failing test file" << std::endl;
+			husky->requestCloudFile("failure");
+		}
+	}
+	
+	
+	
+	return 0;
 }
-

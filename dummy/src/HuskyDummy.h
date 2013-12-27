@@ -19,17 +19,26 @@ public:
 	static HuskyDummy* getInstance();
 
 	static void shutdownInstance();
-	
-	/** Returns the name of the Husky **/
-	static char* getName();
-	
+
 	void setObserver(HuskyObserver* observer);
-	
-	/** Try and set the achievement with this name. Will return a setAchievementCallback if an observer is set.
-		If an observer is set and an achievement called "Failed Achievement" is set, the observer will get a failed callback
-	 **/
+
+	uint16_t getCapabilities();
+
 	void setAchievement(const char* name);
+
+	void doTick();
 	
+	void resetAchievements();
+	
+	void uploadLeaderboardScore(const char *name, int32_t score, HuskyLeaderboardScoreToKeep tokeep, int64_t extradata);
+	
+	void requestLeaderboardScores(const char *name, bool friends, HuskyLeaderboardScoreTimeFrame timeframe, int offset, int number);
+	
+	void requestLeaderboardScoresNearPlayer(const char *name, bool friends, HuskyLeaderboardScoreTimeFrame timeframe, int offset, int number);
+
+	void uploadCloudFile(const char *path, const char *cloudfilename);
+
+	void requestCloudFile(const char *cloudfilename);	
 private:
 	static HuskyDummy* instance;
 	

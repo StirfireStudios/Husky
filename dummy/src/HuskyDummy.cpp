@@ -39,6 +39,11 @@ void HuskyDummy::shutdownInstance() {
 }
 
 EXPORT
+uint16_t HuskyDummy::getCapabilities() {
+	return HuskyHasAchievements | HuskyHasCloudSaves | HuskyHasLeaderboards;
+}
+
+EXPORT
 void HuskyDummy::setObserver(HuskyObserver *observer) {
 	_observer = observer;
 }
@@ -46,7 +51,7 @@ void HuskyDummy::setObserver(HuskyObserver *observer) {
 EXPORT
 void HuskyDummy::setAchievement(const char *name) {
 	if (_observer != NULL) {
-		if (strcmp(name, "Failed Achievement") == 0) {
+		if (strcasecmp(name, "Failed Achievement") == 0) {
 			std::cout << "Dummy Husky: Failed Achievement used, sending failure callback: " << std::endl;
 			_observer->HuskyObserverAchievementCallback(name, false);
 		} else {
@@ -55,6 +60,169 @@ void HuskyDummy::setAchievement(const char *name) {
 		}
 	} else {
 		std::cout << "Dummy Husky: Setting Achievement Earned: " << name << std::endl;
+	}
+}
+
+EXPORT
+void HuskyDummy::doTick() {
+}
+
+EXPORT
+void HuskyDummy::resetAchievements() {
+	printf("Resetting Achievements");
+}
+
+EXPORT
+void HuskyDummy::uploadLeaderboardScore(const char *name, int32_t score, HuskyLeaderboardScoreToKeep tokeep, int64_t extradata) {
+	const char *keepstring, *extrastring;
+	if (extradata == 0) {
+		extrastring = "no extra data";
+	} else {
+		extrastring = "with extra data";
+	}
+	switch(tokeep) {
+		case HuskyLeaderboardScoreToKeepBest:
+			keepstring = "keeping the best score";
+		case HuskyLeaderboardScoreToKeepUpdate:
+			keepstring = "Updating existing score";
+		default:
+			keepstring = " Unknown condition";
+	}
+	
+	std::cout << "Dummy Husky: Uploading score to leaderboard " << name << " - score " << score << " " << keepstring << " " << extrastring << std::endl;
+
+	if (_observer == NULL)
+		return;
+	if (strcasecmp(name, "Failed Leaderboard") == 0) {
+		std::cout << "Dummy Husky: Failed Leaderboard used, sending failure callback: " << std::endl;
+		_observer->HuskyObserverLeaderboardScoreSetCallback(name, false);
+	} else {
+		std::cout << "Dummy Husky: sending success callback for Leaderboard " << name  << std::endl;
+		_observer->HuskyObserverLeaderboardScoreSetCallback(name, true);
+	}
+}
+
+EXPORT
+void HuskyDummy::requestLeaderboardScores(
+										  const char *name, bool friends,
+										  HuskyLeaderboardScoreTimeFrame timeframe, int offset, int number) {
+	const char *friendstr = "";
+	if (friends) {
+		printf(" Friends only ");
+	}
+
+	const char *timestr;
+	
+	switch(timeframe) {
+		case HuskyLeaderboardTodaysScores:
+			timestr = " from today";
+			break;
+		case HuskyLeaderboardWeeksScores:
+			timestr = " from the last week";
+			break;
+		default:
+			timestr = "";
+	}
+	
+	std::cout << "Dummy Husky: Requesting " << offset << " scores starting at score " << number << " on leaderboard " << friendstr << timestr << std::endl;
+
+	if (_observer) {
+		if (strcasecmp(name, "Failed Leaderboard") == 0) {
+			_observer->HuskyObserverLeaderboardScoreGetCallback(name, NULL, 0);
+		} else {
+			HuskyLeaderboardEntry *entries = (HuskyLeaderboardEntry*)calloc(sizeof(HuskyLeaderboardEntry), 3);
+			entries[0].name = "Joe Bloggs";
+			entries[0].globalrank = 1;
+			entries[0].score = 100;
+			entries[0].data = 0;
+			entries[1].name = "Joe Schmoe";
+			entries[1].globalrank = 2;
+			entries[1].score = 50;
+			entries[1].data = 0;
+			entries[2].name = "Joe Place";
+			entries[2].globalrank = 3;
+			entries[2].score = 10;
+			entries[2].data = 0;
+			_observer->HuskyObserverLeaderboardScoreGetCallback(name, entries, 3);
+		}
+	}
+}
+
+EXPORT
+void HuskyDummy::requestLeaderboardScoresNearPlayer(
+										  const char *name, bool friends,
+										  HuskyLeaderboardScoreTimeFrame timeframe, int offset, int number) {
+	const char *friendstr = "";
+	if (friends) {
+		printf(" Friends only ");
+	}
+	
+	const char *timestr;
+	
+	switch(timeframe) {
+		case HuskyLeaderboardTodaysScores:
+			timestr = " from today";
+			break;
+		case HuskyLeaderboardWeeksScores:
+			timestr = " from the last week";
+			break;
+		default:
+			timestr = "";
+	}
+	
+	std::cout << "Dummy Husky: Requesting " << offset << " scores around player starting at score " << number << " on leaderboard " << friendstr << timestr << std::endl;
+	
+	if (_observer) {
+		if (strcasecmp(name, "Failed Leaderboard") == 0) {
+			_observer->HuskyObserverLeaderboardScoreGetCallback(name, NULL, 0);
+		} else {
+			HuskyLeaderboardEntry *entries = (HuskyLeaderboardEntry*)calloc(sizeof(HuskyLeaderboardEntry), 3);
+			entries[0].name = "Joe Bloggs";
+			entries[0].globalrank = 1;
+			entries[0].score = 100;
+			entries[0].data = 0;
+			entries[1].name = "Joe Schmoe";
+			entries[1].globalrank = 2;
+			entries[1].score = 50;
+			entries[1].data = 0;
+			entries[2].name = "Joe Place";
+			entries[2].globalrank = 3;
+			entries[2].score = 10;
+			entries[2].data = 0;
+			_observer->HuskyObserverLeaderboardScoreGetCallback(name, entries, 3);
+		}
+	}
+}
+
+EXPORT
+void HuskyDummy::uploadCloudFile(const char *path, const char *cloudfilename) {
+	std::cout << "Dummy Husky: Uploading cloud file: \"" << path << "\" to cloud filename \"" << cloudfilename << "\"" << std::endl;
+	if (_observer) {
+		if (strcasecmp(cloudfilename, "failure")) {
+			_observer->HuskyObserverCloudFileUploaded(path, false);
+		} else {
+			_observer->HuskyObserverCloudFileUploaded(path, true);
+		}
+	}
+}
+
+EXPORT
+void HuskyDummy::requestCloudFile(const char *cloudfilename) {
+	std::cout << "Dummy Husky: Requesting cloud file: \"" << cloudfilename << "\"" << std::endl;
+	if (_observer) {
+		if (strcasecmp(cloudfilename, "failure")) {
+			_observer->HuskyObserverCloudFileDownloaded(cloudfilename, NULL, false);
+		} else {
+			const char *path = "/tmp/clouddownloadtest.txt";
+			FILE *handle = fopen(path, "w");
+			if (handle) {
+				const char *teststring = "TEST CLOUD FILE";
+				fwrite(teststring, sizeof(char), strlen(teststring) + 1, handle);
+				fclose(handle);
+			}
+			
+			_observer->HuskyObserverCloudFileDownloaded(cloudfilename, path, true);
+		}
 	}
 }
 
