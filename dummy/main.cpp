@@ -14,8 +14,8 @@ class TestObserver : public HuskyObserver {
 	void HuskyObserverAchievementCallback(const char *name, bool success);
 	void HuskyObserverLeaderboardScoreSetCallback(const char *name, bool success);
 	void HuskyObserverLeaderboardScoreGetCallback(const char *name, HuskyLeaderboardEntry *entries, int number);
-	void HuskyObserverCloudFileUploaded(const char *path, bool success);
-	void HuskyObserverCloudFileDownloaded(const char *cloudfilename, const char *tempfile, bool success);
+	void HuskyObserverCloudDataUploaded(const char *cloudfilename, bool success);
+	void HuskyObserverCloudDataDownloaded(const char *cloudfilename, void *data, int32_t bytes);
 };
 
 void TestObserver::HuskyObserverAchievementCallback(const char *name, bool success) {
@@ -41,19 +41,19 @@ void TestObserver::HuskyObserverLeaderboardScoreGetCallback(const char *name, Hu
 	}
 }
 
-void TestObserver::HuskyObserverCloudFileUploaded(const char *path, bool success) {
+void TestObserver::HuskyObserverCloudDataUploaded(const char *cloudfilename, bool success) {
 	if (success) {
-		std::cout << " Uploaded \"" << path << "\" to cloud storage" << std::endl;
+		std::cout << " Uploaded Data to cloud file \"" << cloudfilename << "\"" << std::endl;
 	} else {
-		std::cout << " Failed to Upload \"" << path << "\" to cloud storage :(" << std::endl;
+		std::cout << " Failed to Uploaded Data to cloud file \"" << cloudfilename << "\"" << std::endl;
 	}
 }
 
-void TestObserver::HuskyObserverCloudFileDownloaded(const char *cloudfilename, const char *tempfile, bool success) {
-	if (success) {
-		std::cout << " Downloaded cloud file \"" << cloudfilename << "\" to \"" << tempfile << "\" to cloud storage" << std::endl;
+void TestObserver::HuskyObserverCloudDataDownloaded(const char *cloudfilename, void *data, int32_t bytes) {
+	if (bytes > 0) {
+		std::cout << " Downloaded cloud file \"" << cloudfilename << "\" and got " << bytes << " data " << std::endl;
 	} else {
-		std::cout << " Failed to download cloud file \"" << cloudfilename << "\"" << std::endl;
+		std::cout << " Failed to download any data for cloud file \"" << cloudfilename << "\"" << std::endl;
 	}
 }
 
@@ -126,17 +126,15 @@ int main(int argc, const char * argv[]) {
 		FILE *handle = fopen("/tmp/cloudtest.txt", "w");
 		if (handle) {
 			const char *teststring = "TEST CLOUD FILE";
-			fwrite(teststring, sizeof(char), strlen(teststring) + 1, handle);
-			fclose(handle);
 			std::cout << "Trying to upload the cloud test file" << std::endl;
-			husky->uploadCloudFile("/tmp/cloudtest.txt", "cloudtest.txt");
+			husky->uploadCloudData("test", (void*)teststring, strlen(teststring));
 			std::cout << "Trying to upload the failing test file" << std::endl;
-			husky->uploadCloudFile("/tmp/cloudtest.txt", "failure");
+			husky->uploadCloudData("failure", (void*)teststring, strlen(teststring));
 
 			std::cout << "Trying to download a cloud test file" << std::endl;
-			husky->requestCloudFile("cloudtest.txt");
+			husky->requestCloudData("cloudtest.txt");
 			std::cout << "Trying to download a failing test file" << std::endl;
-			husky->requestCloudFile("failure");
+			husky->requestCloudData("failure");
 		}
 	}
 	

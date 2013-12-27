@@ -23,8 +23,8 @@ public:
 	virtual void HuskyObserverAchievementCallback(const char *name, bool success) = 0;
 	virtual void HuskyObserverLeaderboardScoreSetCallback(const char *name, bool success) = 0;
 	virtual void HuskyObserverLeaderboardScoreGetCallback(const char *name, HuskyLeaderboardEntry *entries, int number) = 0;
-	virtual void HuskyObserverCloudFileUploaded(const char *path, bool success) = 0;
-	virtual void HuskyObserverCloudFileDownloaded(const char *cloudfilename, const char *tempfile, bool success) = 0;
+	virtual void HuskyObserverCloudDataUploaded(const char *cloudfilename, bool success) = 0;
+	virtual void HuskyObserverCloudDataDownloaded(const char *cloudfilename, void *data, int32_t bytes) = 0;
 };
 
 /** Leaderboard Score keep types **/
@@ -90,10 +90,10 @@ public:
 	virtual void requestLeaderboardScoresNearPlayer(const char *name, bool friends, HuskyLeaderboardScoreTimeFrame timeframe, int offset, int number) = 0;
 	
 	/** Upload the specified file in path to the cloudfilename in this husky's cloud storage system **/
-	virtual void uploadCloudFile(const char *path, const char *cloudfilename) = 0;
+	virtual void uploadCloudData(const char *cloudfilename, void* data, int32_t bytes) = 0;
 
 	/** download the specified file from the cloud storage system - callback will return the path of the file **/
-	virtual void requestCloudFile(const char *cloudfilename) = 0;
+	virtual void requestCloudData(const char *cloudfilename) = 0;
 };
 
 

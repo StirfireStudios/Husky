@@ -36,9 +36,9 @@ public:
 	
 	void requestLeaderboardScoresNearPlayer(const char *name, bool friends, HuskyLeaderboardScoreTimeFrame timeframe, int offset, int number);
 
-	void uploadCloudFile(const char *path, const char *cloudfilename);
+	void uploadCloudData(const char *cloudfilename, void* data, int32_t bytes);
 
-	void requestCloudFile(const char *cloudfilename);	
+	void requestCloudData(const char *cloudfilename);
 private:
 	static HuskyDummy* instance;
 	

@@ -195,33 +195,26 @@ void HuskyDummy::requestLeaderboardScoresNearPlayer(
 }
 
 EXPORT
-void HuskyDummy::uploadCloudFile(const char *path, const char *cloudfilename) {
-	std::cout << "Dummy Husky: Uploading cloud file: \"" << path << "\" to cloud filename \"" << cloudfilename << "\"" << std::endl;
+void HuskyDummy::uploadCloudData(const char *cloudfilename, void *data, int32_t bytes) {
+	std::cout << "Dummy Husky: Uploading data to cloud file: \"" << cloudfilename << "\" data is size: " << bytes << " Bytes" << std::endl;
 	if (_observer) {
 		if (strcasecmp(cloudfilename, "failure")) {
-			_observer->HuskyObserverCloudFileUploaded(path, false);
+			_observer->HuskyObserverCloudDataUploaded(cloudfilename, false);
 		} else {
-			_observer->HuskyObserverCloudFileUploaded(path, true);
+			_observer->HuskyObserverCloudDataUploaded(cloudfilename, true);
 		}
 	}
 }
 
 EXPORT
-void HuskyDummy::requestCloudFile(const char *cloudfilename) {
+void HuskyDummy::requestCloudData(const char *cloudfilename) {
 	std::cout << "Dummy Husky: Requesting cloud file: \"" << cloudfilename << "\"" << std::endl;
 	if (_observer) {
 		if (strcasecmp(cloudfilename, "failure")) {
-			_observer->HuskyObserverCloudFileDownloaded(cloudfilename, NULL, false);
+			_observer->HuskyObserverCloudDataDownloaded(cloudfilename, NULL, 0);
 		} else {
-			const char *path = "/tmp/clouddownloadtest.txt";
-			FILE *handle = fopen(path, "w");
-			if (handle) {
-				const char *teststring = "TEST CLOUD FILE";
-				fwrite(teststring, sizeof(char), strlen(teststring) + 1, handle);
-				fclose(handle);
-			}
-			
-			_observer->HuskyObserverCloudFileDownloaded(cloudfilename, path, true);
+			const char *data = "CLOUD DATA";
+			_observer->HuskyObserverCloudDataDownloaded(cloudfilename, (void*)data, strlen(data) * sizeof(char));
 		}
 	}
 }
