@@ -9,20 +9,30 @@
 #ifndef __dummy__HuskyLoader__
 #define __dummy__HuskyLoader__
 
+#ifdef __APPLE__
+	#include <dlfcn.h>
+	typedef void* HuskyDLLHandle;
+#elif WIN32
+//	#include 
+	#include <Windows.h>
+	typedef HMODULE HuskyDLLHandle;
+#endif
+
 #include <iostream>
 #include <string>
 #include <map>
-#include <dlfcn.h>
+
 #include "Husky.h"
 
 class HuskyLoaderHandle {
 public:
 	HuskyLoaderHandle();
-	HuskyLoaderHandle(void* dllhandle);
-	void* dllhandle;
+	HuskyLoaderHandle(HuskyDLLHandle dllhandle);
+	HuskyDLLHandle dllhandle;
 };
 
-using LoaderHandleMap = std::map<std::string, HuskyLoaderHandle>;
+typedef std::map<std::string, HuskyLoaderHandle> LoaderHandleMap;
+//using LoaderHandleMap = std::map<std::string, HuskyLoaderHandle>;
 
 class HuskyLoader {
 public:

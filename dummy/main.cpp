@@ -7,8 +7,10 @@
 //
 
 #include <iostream>
-#include "HuskyLoader.h"
-#include <inttypes.h>
+#include <HuskyLoader.h>
+#ifdef __APPLE__
+	#include <inttypes.h>
+#endif 
 
 class TestObserver : public HuskyObserver {
 	void HuskyObserverAchievementCallback(const char *name, bool success);
@@ -37,7 +39,7 @@ void TestObserver::HuskyObserverLeaderboardScoreSetCallback(const char *name, bo
 void TestObserver::HuskyObserverLeaderboardScoreGetCallback(const char *name, HuskyLeaderboardEntry *entries, int number) {
 	printf("Recieved scores for leaderboard: %s", name);
 	for(int i = 0; i < number; i++) {
-		printf("%i. %s Score: %i - Extra Data: %" PRId64"\n", entries[i].globalrank, entries[i].name, entries[i].score, entries[i].data);
+//		printf("%i. %s Score: %i - Extra Data: %" PRId64"\n", entries[i].globalrank, entries[i].name, entries[i].score, entries[i].data);
 	}
 }
 
@@ -123,7 +125,8 @@ int main(int argc, const char * argv[]) {
 		std::cout << "Cloud Storage" << std::endl;
 		std::cout << "#####################" << std::endl;
 		
-		FILE *handle = fopen("/tmp/cloudtest.txt", "w");
+		FILE *handle = NULL;
+//		handle = fopen("/tmp/cloudtest.txt", "w");
 		if (handle) {
 			const char *teststring = "TEST CLOUD FILE";
 			std::cout << "Trying to upload the cloud test file" << std::endl;
@@ -137,8 +140,6 @@ int main(int argc, const char * argv[]) {
 			husky->requestCloudData("failure");
 		}
 	}
-	
-	
-	
+	getchar();
 	return 0;
 }
