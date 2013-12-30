@@ -13,6 +13,8 @@
 #include <stdint.h>
 #define EXPORT __declspec(dllexport)
 #define strcasecmp(a,b) lstrcmpi(a,b)
+#elif __APPLE__
+#define EXPORT __attribute__((visibility("default")))
 #endif
 /** Leaderboard entries. TODO: Add opaque type so we can retrieve more info about people **/
 struct HuskyLeaderboardEntry {
