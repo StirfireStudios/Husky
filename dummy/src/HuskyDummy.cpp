@@ -81,8 +81,10 @@ void HuskyDummy::uploadLeaderboardScore(const char *name, int32_t score, HuskyLe
 	switch(tokeep) {
 		case HuskyLeaderboardScoreToKeepBest:
 			keepstring = "keeping the best score";
+			break;
 		case HuskyLeaderboardScoreToKeepUpdate:
 			keepstring = "Updating existing score";
+			break;
 		default:
 			keepstring = " Unknown condition";
 	}
