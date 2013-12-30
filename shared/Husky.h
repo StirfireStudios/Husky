@@ -8,7 +8,12 @@
 
 #ifndef dummy_Husky_h
 #define dummy_Husky_h
-
+#ifdef WIN32
+#include <windows.h>
+#include <stdint.h>
+#define EXPORT __declspec(dllexport)
+#define strcasecmp(a,b) lstrcmpi(a,b)
+#endif
 /** Leaderboard entries. TODO: Add opaque type so we can retrieve more info about people **/
 struct HuskyLeaderboardEntry {
 	const char *name;
@@ -49,7 +54,11 @@ enum HuskyCapabilities {
 	HuskyHasCloudSaves = 4
 };
 
-class Husky {
+class
+#ifdef WIN32
+EXPORT
+#endif
+	Husky {
 public:
 	//	virtual ~Husky();
 	
@@ -96,12 +105,11 @@ public:
 	virtual void requestCloudData(const char *cloudfilename) = 0;
 };
 
-
-extern "C" Husky* getHuskyInstance();
+extern "C" EXPORT Husky* getHuskyInstance();
 typedef Husky* HuskyGetStaticInstance();
-extern "C" void shutdownHuskyInstance();
+extern "C" EXPORT void shutdownHuskyInstance();
 typedef void HuskyShutdownStaticInstance();
-extern "C" char *getHuskyName();
+extern "C" EXPORT char *getHuskyName();
 typedef char* HuskyGetName();
 
 #endif

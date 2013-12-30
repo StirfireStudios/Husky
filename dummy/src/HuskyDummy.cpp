@@ -8,8 +8,6 @@
 
 #include "HuskyDummy.h"
 
-#define EXPORT __attribute__((visibility("default")))
-
 HuskyDummy* HuskyDummy::instance;
 
 EXPORT

@@ -12,8 +12,11 @@
 #include <iostream>
 #include "Husky.h"
 
-
-class HuskyDummy : public Husky {
+class
+#ifdef WIN32
+EXPORT
+#endif
+HuskyDummy : public Husky {
 public:
 	/** Get a handle to the husky singleton **/
 	static HuskyDummy* getInstance();
