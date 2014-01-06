@@ -7,7 +7,7 @@
 //
 
 #include <iostream>
-#include <HuskyLoader.h>
+#include "../shared/HuskyLoader.h"
 #ifdef __APPLE__
 	#include <inttypes.h>
 #endif 
