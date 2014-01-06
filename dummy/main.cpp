@@ -39,7 +39,10 @@ void TestObserver::HuskyObserverLeaderboardScoreSetCallback(const char *name, bo
 void TestObserver::HuskyObserverLeaderboardScoreGetCallback(const char *name, HuskyLeaderboardEntry *entries, int number) {
 	printf("Recieved scores for leaderboard: %s", name);
 	for(int i = 0; i < number; i++) {
-//		printf("%i. %s Score: %i - Extra Data: %" PRId64"\n", entries[i].globalrank, entries[i].name, entries[i].score, entries[i].data);
+		std::cout << entries[i].globalrank << ". " << entries[i].name << " Score: " << entries[i].score;
+		if (entries[i].data != 0)
+			std::cout << " Data: " << entries[i].data;
+		std::cout << std::endl;
 	}
 }
 
