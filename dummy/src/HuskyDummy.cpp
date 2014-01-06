@@ -7,6 +7,8 @@
 //
 
 #include "HuskyDummy.h"
+#include <random>
+#include <string.h>
 
 HuskyDummy* HuskyDummy::instance;
 
@@ -102,6 +104,36 @@ void HuskyDummy::uploadLeaderboardScore(const char *name, int32_t score, HuskyLe
 	}
 }
 
+HuskyLeaderboardEntry *generateEntries(int number, int startRank) {
+	HuskyLeaderboardEntry *entries = (HuskyLeaderboardEntry*)calloc(sizeof(HuskyLeaderboardEntry), number);
+	std::default_random_engine generator;
+	std::string names[6] = {"Joe Bloggs", "Joe Schmoe", "John Winchester", "Frogman", "Salazar", "Greebo"};
+	std::uniform_int_distribution<int> name_random(0,5);
+	std::uniform_int_distribution<int> score_random(0,100000);
+	for(int i = 0; i < number; i++) {
+		int index = name_random(generator);
+		std::string *aname = &names[index];
+		entries[i].name = (char*)malloc((aname->length() + 1) * sizeof(char));
+		strncpy((char*)entries[i].name, aname->c_str(), aname->length() + 1);
+		entries[i].score = score_random(generator);
+		entries[i].globalrank = startRank + i;
+		entries[i].data = 0;
+	}
+	entries[0].name = "Joe Bloggs";
+	entries[0].globalrank = 1;
+	entries[0].score = 100;
+	entries[0].data = 0;
+	entries[1].name = "Joe Schmoe";
+	entries[1].globalrank = 2;
+	entries[1].score = 50;
+	entries[1].data = 0;
+	entries[2].name = "Joe Place";
+	entries[2].globalrank = 3;
+	entries[2].score = 10;
+	entries[2].data = 0;
+	return entries;
+}
+
 EXPORT
 void HuskyDummy::requestLeaderboardScores(
 										  const char *name, bool friends,
@@ -130,19 +162,7 @@ void HuskyDummy::requestLeaderboardScores(
 		if (strcasecmp(name, "Failed Leaderboard") == 0) {
 			_observer->HuskyObserverLeaderboardScoreGetCallback(name, NULL, 0);
 		} else {
-			HuskyLeaderboardEntry *entries = (HuskyLeaderboardEntry*)calloc(sizeof(HuskyLeaderboardEntry), 3);
-			entries[0].name = "Joe Bloggs";
-			entries[0].globalrank = 1;
-			entries[0].score = 100;
-			entries[0].data = 0;
-			entries[1].name = "Joe Schmoe";
-			entries[1].globalrank = 2;
-			entries[1].score = 50;
-			entries[1].data = 0;
-			entries[2].name = "Joe Place";
-			entries[2].globalrank = 3;
-			entries[2].score = 10;
-			entries[2].data = 0;
+			HuskyLeaderboardEntry *entries = generateEntries(number, offset);
 			_observer->HuskyObserverLeaderboardScoreGetCallback(name, entries, 3);
 		}
 	}
@@ -170,25 +190,13 @@ void HuskyDummy::requestLeaderboardScoresNearPlayer(
 			timestr = "";
 	}
 	
-	std::cout << "Dummy Husky: Requesting " << offset << " scores around player starting at score " << number << " on leaderboard " << friendstr << timestr << std::endl;
+	std::cout << "Dummy Husky: Requesting " << number << " scores around player starting at score " << offset << " on leaderboard " << friendstr << timestr << std::endl;
 	
 	if (_observer) {
 		if (strcasecmp(name, "Failed Leaderboard") == 0) {
 			_observer->HuskyObserverLeaderboardScoreGetCallback(name, NULL, 0);
 		} else {
-			HuskyLeaderboardEntry *entries = (HuskyLeaderboardEntry*)calloc(sizeof(HuskyLeaderboardEntry), 3);
-			entries[0].name = "Joe Bloggs";
-			entries[0].globalrank = 1;
-			entries[0].score = 100;
-			entries[0].data = 0;
-			entries[1].name = "Joe Schmoe";
-			entries[1].globalrank = 2;
-			entries[1].score = 50;
-			entries[1].data = 0;
-			entries[2].name = "Joe Place";
-			entries[2].globalrank = 3;
-			entries[2].score = 10;
-			entries[2].data = 0;
+			HuskyLeaderboardEntry *entries = generateEntries(number, offset);
 			_observer->HuskyObserverLeaderboardScoreGetCallback(name, entries, 3);
 		}
 	}
