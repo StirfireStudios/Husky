@@ -15,6 +15,8 @@
 #define strcasecmp(a,b) lstrcmpi(a,b)
 #elif __APPLE__
 #define EXPORT __attribute__((visibility("default")))
+#else
+#define EXPORT
 #endif
 /** Leaderboard entries. TODO: Add opaque type so we can retrieve more info about people **/
 struct HuskyLeaderboardEntry {
