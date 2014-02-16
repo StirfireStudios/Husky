@@ -55,7 +55,9 @@ enum HuskyLeaderboardScoreTimeFrame {
 enum HuskyCapabilities {
 	HuskyHasLeaderboards = 1,
 	HuskyHasAchievements = 2,
-	HuskyHasCloudSaves = 4
+	HuskyHasCloudSaves = 4,
+	HuskyHasGenericOverlay = 8,
+	HuskyHasAchievementReset = 16
 };
 
 class
@@ -77,16 +79,19 @@ public:
 	
 	/** Get what things this husky can do **/
 	virtual uint16_t getCapabilities() = 0;
-	
-	/** Try and set the achievement with this name. Will return a setAchievementCallback if an observer is set **/
-	virtual void setAchievement(const char *name) = 0;
 
 	/** This function is run every update cycle to service callbacks etc. */
 	virtual void doTick() = 0;
+
+	/** Try and set the achievement with this name. Will return a setAchievementCallback if an observer is set **/
+	virtual void showOverlay() = 0;
+		
+	/** Try and set the achievement with this name. Will return a setAchievementCallback if an observer is set **/
+	virtual void setAchievement(const char *name) = 0;
 	
 	/** resets users's achievements and stats data **/
 	virtual void resetAchievements() = 0;
-	
+		
 	/** uploads a score to the specified leaderboard **/
 	virtual void uploadLeaderboardScore(const char *name, int32_t score, HuskyLeaderboardScoreToKeep tokeep, int64_t extradata) = 0;
 	
