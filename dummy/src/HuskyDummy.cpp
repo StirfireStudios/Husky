@@ -40,7 +40,7 @@ void HuskyDummy::shutdownInstance() {
 
 EXPORT
 uint16_t HuskyDummy::getCapabilities() {
-	return HuskyHasAchievements | HuskyHasCloudSaves | HuskyHasLeaderboards;
+	return HuskyHasAchievements | HuskyHasCloudSaves | HuskyHasLeaderboards | HuskyHasAchievementReset;
 }
 
 EXPORT
