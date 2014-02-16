@@ -143,6 +143,5 @@ int main(int argc, const char * argv[]) {
 			husky->requestCloudData("failure");
 		}
 	}
-	getchar();
 	return 0;
 }
