@@ -57,7 +57,11 @@ enum HuskyCapabilities {
 	HuskyHasAchievements = 2,
 	HuskyHasCloudSaves = 4,
 	HuskyHasGenericOverlay = 8,
-	HuskyHasAchievementReset = 16
+	HuskyHasAchievementReset = 16,
+	HuskyHasAchievementsOverlay = 32,
+	HuskyHasLeaderboardRangeFetch = 64,
+	HuskyHasLeaderboardsOverlay = 128,
+	HuskyHasSingleLeaderboardOverlay = 256
 };
 
 class
@@ -77,20 +81,32 @@ public:
 	/** Set the listener for husky callbacks **/
 	virtual void setObserver(HuskyObserver *observer) = 0;
 	
-	/** Get what things this husky can do **/
+	/** Get what things this husky can do (see HuskyCapabilities Enum) **/
 	virtual uint16_t getCapabilities() = 0;
 
 	/** This function is run every update cycle to service callbacks etc. */
 	virtual void doTick() = 0;
 
-	/** Try and set the achievement with this name. Will return a setAchievementCallback if an observer is set **/
+	/** Show the Husky system's overlay (if available - HuskyHasGenericOverlay) **/
 	virtual void showOverlay() = 0;
+
+	/** Show the Husky system's achievement overlay (if available - HuskyHasAchievementsOverlay) **/
+	virtual void showAchievementsOverlay() = 0;
 		
 	/** Try and set the achievement with this name. Will return a setAchievementCallback if an observer is set **/
 	virtual void setAchievement(const char *name) = 0;
 	
-	/** resets users's achievements and stats data **/
+	/** resets users's achievements and stats data (if available - HuskyHasAchievementReset) **/
 	virtual void resetAchievements() = 0;
+
+	/** Show the Husky system's leaderboards overlay (if available - HuskyHasLeaderboardsOverlay) **/
+	virtual void showLeaderboardsOverlay() = 0;
+
+	/** Show the Husky system's leaderboard overlay for a specific leaderboard (if available - HuskyHasSingleLeaderboardOverlay) **/
+	virtual void showLeaderboardOverlay(const char *name) = 0;
+		
+	/** How many metadata bytes can the leaderboard store? (-ve means unlimited, 0 means none) */
+	virtual int leaderboardMetadataByteStorage() = 0;
 		
 	/** uploads a score to the specified leaderboard **/
 	virtual void uploadLeaderboardScore(const char *name, int32_t score, HuskyLeaderboardScoreToKeep tokeep, int64_t extradata) = 0;
