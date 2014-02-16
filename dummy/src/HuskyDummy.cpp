@@ -69,7 +69,12 @@ void HuskyDummy::doTick() {
 
 EXPORT
 void HuskyDummy::resetAchievements() {
-	printf("Resetting Achievements");
+	printf("Resetting Achievements\n");
+}
+
+EXPORT
+void HuskyDummy::showOverlay() {
+	printf("Opening Overlay\n");
 }
 
 EXPORT
@@ -119,18 +124,6 @@ HuskyLeaderboardEntry *generateEntries(int number, int startRank) {
 		entries[i].globalrank = startRank + i;
 		entries[i].data = 0;
 	}
-	entries[0].name = "Joe Bloggs";
-	entries[0].globalrank = 1;
-	entries[0].score = 100;
-	entries[0].data = 0;
-	entries[1].name = "Joe Schmoe";
-	entries[1].globalrank = 2;
-	entries[1].score = 50;
-	entries[1].data = 0;
-	entries[2].name = "Joe Place";
-	entries[2].globalrank = 3;
-	entries[2].score = 10;
-	entries[2].data = 0;
 	return entries;
 }
 
@@ -156,14 +149,14 @@ void HuskyDummy::requestLeaderboardScores(
 			timestr = "";
 	}
 	
-	std::cout << "Dummy Husky: Requesting " << offset << " scores starting at score " << number << " on leaderboard " << friendstr << timestr << std::endl;
+	std::cout << "Dummy Husky: Requesting " << number << " scores starting at score " << offset << " on leaderboard " << friendstr << timestr << std::endl;
 
 	if (_observer) {
 		if (strcasecmp(name, "Failed Leaderboard") == 0) {
 			_observer->HuskyObserverLeaderboardScoreGetCallback(name, NULL, 0);
 		} else {
 			HuskyLeaderboardEntry *entries = generateEntries(number, offset);
-			_observer->HuskyObserverLeaderboardScoreGetCallback(name, entries, 3);
+			_observer->HuskyObserverLeaderboardScoreGetCallback(name, entries, number);
 		}
 	}
 }
@@ -197,7 +190,7 @@ void HuskyDummy::requestLeaderboardScoresNearPlayer(
 			_observer->HuskyObserverLeaderboardScoreGetCallback(name, NULL, 0);
 		} else {
 			HuskyLeaderboardEntry *entries = generateEntries(number, offset);
-			_observer->HuskyObserverLeaderboardScoreGetCallback(name, entries, 3);
+			_observer->HuskyObserverLeaderboardScoreGetCallback(name, entries, number);
 		}
 	}
 }

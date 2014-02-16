@@ -30,6 +30,8 @@ public:
 	void setAchievement(const char* name);
 
 	void doTick();
+
+	void showOverlay();	
 	
 	void resetAchievements();
 	
