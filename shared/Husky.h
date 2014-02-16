@@ -61,7 +61,8 @@ enum HuskyCapabilities {
 	HuskyHasAchievementsOverlay = 32,
 	HuskyHasLeaderboardRangeFetch = 64,
 	HuskyHasLeaderboardsOverlay = 128,
-	HuskyHasSingleLeaderboardOverlay = 256
+	HuskyHasSingleLeaderboardOverlay = 256,
+	HuskyHasAllFeatures = 511
 };
 
 class

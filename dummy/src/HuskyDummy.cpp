@@ -40,12 +40,22 @@ void HuskyDummy::shutdownInstance() {
 
 EXPORT
 uint16_t HuskyDummy::getCapabilities() {
-	return HuskyHasAchievements | HuskyHasCloudSaves | HuskyHasLeaderboards | HuskyHasAchievementReset;
+	return HuskyHasAllFeatures;
 }
 
 EXPORT
 void HuskyDummy::setObserver(HuskyObserver *observer) {
 	_observer = observer;
+}
+
+EXPORT
+void HuskyDummy::showOverlay() {
+	printf("Dummy Husky: Opening Generic Overlay\n");
+}
+
+EXPORT
+void HuskyDummy::showAchievementsOverlay() {
+	printf("Dummy Husky: Opening Achievements Overlay\n");
 }
 
 EXPORT
@@ -73,8 +83,18 @@ void HuskyDummy::resetAchievements() {
 }
 
 EXPORT
-void HuskyDummy::showOverlay() {
-	printf("Opening Overlay\n");
+void HuskyDummy::showLeaderboardsOverlay() {
+	printf("Dummy Husky: Opening Leaderboards Overlay\n");
+}
+
+EXPORT
+void HuskyDummy::showLeaderboardOverlay(const char* name) {
+	printf("Dummy Husky: Opening Leaderboard Overlay for %s\n", name);
+}
+
+EXPORT
+int HuskyDummy::leaderboardMetadataByteStorage() {
+	return 0;
 }
 
 EXPORT

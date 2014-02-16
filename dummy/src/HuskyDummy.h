@@ -31,9 +31,17 @@ public:
 
 	void doTick();
 
-	void showOverlay();	
+	void showOverlay();
+	
+	void showAchievementsOverlay();
 	
 	void resetAchievements();
+	
+	void showLeaderboardsOverlay();
+	
+	void showLeaderboardOverlay(const char *name);
+	
+	int leaderboardMetadataByteStorage();
 	
 	void uploadLeaderboardScore(const char *name, int32_t score, HuskyLeaderboardScoreToKeep tokeep, int64_t extradata);
 	
